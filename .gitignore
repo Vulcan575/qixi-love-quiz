@@ -1,0 +1,9 @@
+# npm / wrangler 本地缓存
+.npm-cache/
+node_modules/
+
+# 本地工具配置
+.claude/
+.wrangler/
+.DS_Store
+Thumbs.db
