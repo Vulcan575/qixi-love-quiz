@@ -1,5 +1,7 @@
 # 🌻 七夕恋爱答题闯关
 
+> 🎮 **在线体验：[✨ 打开星辰港湾版](https://vulcan575.github.io/qixi-love-quiz/)**（推荐，天使星最新版）
+
 给女朋友准备的七夕小程序合集，纯前端单文件 HTML，双击即玩，无需联网（音效用浏览器内置合成）。
 
 ## 玩法
@@ -21,8 +23,9 @@
 
 ## 部署
 
-- GitHub Pages / Cloudflare Pages 均可直接托管
-- 部署目录：`deploy/`（内含 `index.html`）
+- **GitHub Pages**：`main` 分支根目录 `index.html` 即部署页（已加 `.nojekyll` 跳过 Jekyll 渲染）
+- 线上地址：<https://vulcan575.github.io/qixi-love-quiz/>
+- 发布新版：将对应版本文件覆盖到根目录 `index.html` → `git push` → 等 1~2 分钟自动构建
 
 ## 定制
 
