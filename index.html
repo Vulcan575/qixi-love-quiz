@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ 恋爱答题闯关 · 星辰港湾</title>
+<meta name="theme-color" content="#1A2240">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>">
+<style>
+  :root{
+    --cream:#FAF5EC;        /* 奶油白 */
+    --gold:#E8C87A;         /* 暖金 */
+    --gold-2:#C99A55;       /* 深金 */
+    --gold-soft:#F7E7B0;    /* 浅金 */
+    --pink:#F5C6D0;         /* 浅粉 */
+    --navy:#3A4A7C;         /* 星空蓝 */
+    --night:#1A2240;        /* 深夜蓝 */
+    --night-2:#232C52;      /* 深蓝紫 */
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif;
+    color:var(--cream);
+    overflow-x:hidden;user-select:none;max-width:100%;
+    background:
+      radial-gradient(900px 500px at 50% -10%, rgba(90,110,170,.55) 0%, transparent 60%),
+      radial-gradient(700px 420px at 8% 40%, rgba(232,200,122,.10) 0%, transparent 55%),
+      radial-gradient(700px 420px at 96% 28%, rgba(245,198,208,.08) 0%, transparent 55%),
+      linear-gradient(180deg,#171E3C 0%,#1A2240 55%,#243056 100%);
+    background-attachment:fixed;
+  }
+
+  /* ============ 固定背景：星空 + 流星 + 沙丘 ============ */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .star{
+    position:absolute;border-radius:50%;
+    background:#fff;opacity:.85;
+    animation:twinkle var(--d,3.4s) ease-in-out infinite;
+    animation-delay:var(--dl,0s);
+  }
+  .star.big{box-shadow:0 0 6px 1px rgba(255,255,255,.55), 0 0 14px 4px rgba(232,200,122,.28)}
+  .star.gold{background:var(--gold);box-shadow:0 0 8px 2px rgba(232,200,122,.5)}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:.95;transform:scale(1.08)}}
+  .shooting{
+    position:absolute;top:0;left:0;width:110px;height:1.5px;
+    background:linear-gradient(90deg,var(--gold-soft),transparent);
+    border-radius:2px;opacity:0;
+    animation:shoot var(--sd,7s) linear infinite;
+    animation-delay:var(--sdl,0s);
+    box-shadow:0 0 8px 1px rgba(232,200,122,.4);
+  }
+  @keyframes shoot{
+    0%{transform:translate(-60px,-60px) rotate(-35deg);opacity:0}
+    4%{opacity:1}
+    14%{transform:translate(120vw,120vw) rotate(-35deg);opacity:0}
+    100%{transform:translate(120vw,120vw) rotate(-35deg);opacity:0}
+  }
+
+  /* 金色沙丘（两层） */
+  .dune{
+    position:absolute;left:-8%;right:-8%;bottom:-4px;pointer-events:none;
+  }
+  .dune svg{width:100%;height:100%;display:block}
+  .dune-far{bottom:-8px;height:26vh}
+  .dune-near{bottom:-12px;height:24vh}
+
+  .hidden{display:none !important}
+
+  /* ============ 通用屏幕 ============ */
+  .screen{position:relative;z-index:2;min-height:100vh;width:100%;max-width:560px;margin:0 auto;padding:26px 20px 30px;min-width:0}
+  .screen.active{display:flex;flex-direction:column;align-items:center}
+  .screen.active.anim{animation:screenIn .6s cubic-bezier(.2,.9,.3,1)}
+  @keyframes screenIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+  #soundBtn{
+    position:fixed;top:14px;right:14px;z-index:60;
+    width:42px;height:42px;border:1px solid rgba(232,200,122,.45);border-radius:50%;
+    background:rgba(255,255,255,.07);backdrop-filter:blur(10px);
+    color:var(--gold-soft);font-size:17px;cursor:pointer;line-height:1;
+    box-shadow:0 8px 20px rgba(0,0,0,.3);
+  }
+  #soundBtn:active{transform:scale(.94)}
+
+  /* ============ 开场 ============ */
+  #intro{justify-content:center;text-align:center;overflow:hidden}
+  .kicker{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:11px;font-weight:600;letter-spacing:5px;color:var(--gold);
+    border:1px solid rgba(232,200,122,.4);border-radius:999px;
+    padding:6px 20px;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
+  }
+  .kicker::before,.kicker::after{content:'✦';font-size:9px;opacity:.8}
+  .intro h1{
+    margin-top:20px;font-size:clamp(36px,10vw,50px);letter-spacing:10px;font-weight:900;
+    background:linear-gradient(180deg,#FBF0D0 0%,var(--gold) 42%,var(--gold-2) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 14px rgba(232,200,122,.3));
+  }
+  .intro .sub{
+    margin-top:14px;font-size:14.5px;font-weight:700;letter-spacing:3px;
+    color:rgba(250,245,236,.85);
+    border:1px solid rgba(245,198,208,.35);border-radius:999px;
+    padding:7px 22px;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
+  }
+  .intro .sub b{color:var(--gold-soft)}
+  .intro .sub .he{color:var(--pink)}
+  .intro .tip{
+    margin-top:16px;font-size:12.5px;font-weight:600;letter-spacing:2px;
+    color:rgba(250,245,236,.6);
+  }
+  .enter-btn{
+    margin-top:26px;border:none;border-radius:999px;padding:15px 54px;
+    font-size:17px;font-family:inherit;font-weight:900;letter-spacing:6px;color:var(--night);cursor:pointer;
+    background:linear-gradient(180deg,#FBF0D0 0%,var(--gold) 55%,#D8AE63 100%);
+    box-shadow:0 10px 28px rgba(232,200,122,.28), inset 0 1px 0 rgba(255,255,255,.5);
+    position:relative;overflow:hidden;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .enter-btn::after{
+    content:'';position:absolute;top:-30%;left:-50%;width:35%;height:160%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+    transform:skewX(-20deg);animation:shine 3.4s ease-in-out infinite;
+  }
+  @keyframes shine{0%{left:-50%}55%{left:120%}100%{left:120%}}
+  .enter-btn:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(232,200,122,.36)}
+  .enter-btn:active{transform:translateY(2px) scale(.98);box-shadow:0 5px 14px rgba(232,200,122,.24)}
+
+  /* 天使托猫插画 */
+  .scene{
+    position:relative;width:min(300px,78vw);margin-top:22px;cursor:pointer;
+    filter:drop-shadow(0 18px 30px rgba(0,0,0,.4));
+  }
+  .scene svg{width:100%;height:auto;display:block}
+  .halo{animation:haloBreathe 3s ease-in-out infinite;transform-origin:130px 16px}
+  @keyframes haloBreathe{
+    0%,100%{opacity:.55;transform:scale(.96)}
+    50%{opacity:1;transform:scale(1.06)}
+  }
+  .halo-star{animation:starSpin 9s linear infinite;transform-origin:130px 16px}
+  @keyframes starSpin{to{transform:rotate(360deg)}}
+  .ripple{
+    position:absolute;width:22px;height:22px;border-radius:50%;
+    border:1.5px solid rgba(232,200,122,.85);pointer-events:none;
+    animation:ripple .85s ease-out forwards;
+  }
+  @keyframes ripple{
+    from{transform:translate(-50%,-50%) scale(.4);opacity:1}
+    to{transform:translate(-50%,-50%) scale(2.4);opacity:0}
+  }
+  .made-by{
+    margin-top:16px;font-size:11px;font-weight:600;letter-spacing:4px;
+    color:rgba(232,200,122,.75);border-top:1px solid rgba(232,200,122,.25);padding-top:10px;
+  }
+
+  /* ============ 答题 ============ */
+  #quiz{justify-content:flex-start}
+  .quiz-head{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+  .progress{display:flex;gap:7px}
+  .progress i{
+    font-style:normal;font-size:22px;line-height:1;
+    color:rgba(250,245,236,.22);text-shadow:none;
+    transition:color .4s, transform .4s, text-shadow .4s;
+  }
+  .progress i.on{
+    color:var(--gold);
+    text-shadow:0 0 12px rgba(232,200,122,.9);
+    transform:scale(1.18) translateY(-2px);
+    animation:bloom .45s cubic-bezier(.2,1.6,.4,1);
+  }
+  @keyframes bloom{from{transform:scale(.2)}to{transform:scale(1.18)}}
+  .q-count{
+    font-size:12.5px;font-weight:700;color:var(--gold-soft);
+    border:1px solid rgba(232,200,122,.4);border-radius:999px;
+    padding:5px 16px;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
+    white-space:nowrap;
+  }
+
+  /* 手办展示盒 */
+  .card{
+    width:100%;
+    background:linear-gradient(180deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.06) 100%);
+    backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    border:1px solid rgba(232,200,122,.68);
+    border-radius:26px;
+    box-shadow:0 24px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(232,200,122,.2), 0 0 40px rgba(232,200,122,.06);
+    padding:26px 20px 20px;position:relative;
+  }
+  .card::before{ /* 玻璃盒盖高光 */
+    content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  }
+  .card::after{ /* 金色底座 */
+    content:'';position:absolute;bottom:-3px;left:10%;right:10%;height:3px;border-radius:99px;
+    background:linear-gradient(90deg,transparent,rgba(232,200,122,.85),transparent);
+  }
+  .card.pop{animation:cardIn .5s cubic-bezier(.2,1.2,.35,1)}
+  @keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+  .card.shake{animation:shake .45s}
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-9px)}40%{transform:translateX(8px)}
+    60%{transform:translateX(-6px)}80%{transform:translateX(4px)}
+  }
+  .q-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:11.5px;font-weight:800;letter-spacing:3px;color:var(--gold-soft);
+    border:1px solid rgba(232,200,122,.45);border-radius:999px;
+    padding:5px 14px 5px 12px;background:rgba(23,30,60,.5);
+  }
+  .q-badge::before{content:'✦';font-size:10px;color:var(--gold)}
+  .q-text{
+    font-size:clamp(19px,5.5vw,23px);line-height:1.75;margin:18px 0 20px;
+    font-weight:900;color:var(--cream);position:relative;text-shadow:0 1px 8px rgba(0,0,0,.35);
+  }
+  .q-text .you{color:var(--gold-soft)}
+  .q-text .her{color:var(--pink)}
+
+  /* 选项区（盒内星空舞台） */
+  .options{
+    position:relative;height:clamp(250px,42vh,330px);
+    border:1px solid rgba(232,200,122,.28);border-radius:20px;
+    background:rgba(23,30,60,.35);
+    box-shadow:inset 0 2px 18px rgba(0,0,0,.35);
+  }
+  .opt{
+    position:absolute;width:74%;max-width:290px;
+    text-align:left;font-family:inherit;font-size:15px;font-weight:700;color:var(--cream);
+    background:rgba(255,255,255,.13);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(232,200,122,.6);border-radius:14px;
+    padding:13px 18px;cursor:pointer;
+    box-shadow:0 8px 22px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.15);
+    transition:left .42s cubic-bezier(.34,1.56,.64,1), top .42s cubic-bezier(.34,1.56,.64,1), transform .3s, box-shadow .3s, background .3s;
+  }
+  .opt .mark{color:var(--gold);font-weight:900;margin-right:8px}
+  .opt.ok{ /* 正确答案：安静地发着暖光 */
+    border-color:rgba(232,200,122,.9);
+    background:rgba(232,200,122,.12);
+    box-shadow:0 8px 22px rgba(0,0,0,.3), 0 0 0 4px rgba(232,200,122,.12), inset 0 1px 0 rgba(255,255,255,.12);
+    animation:okBreathe 2.2s ease-in-out infinite;
+  }
+  @keyframes okBreathe{
+    0%,100%{box-shadow:0 8px 22px rgba(0,0,0,.3), 0 0 0 4px rgba(232,200,122,.1), inset 0 1px 0 rgba(255,255,255,.12)}
+    50%{box-shadow:0 8px 22px rgba(0,0,0,.3), 0 0 0 9px rgba(232,200,122,.22), 0 0 26px rgba(232,200,122,.35), inset 0 1px 0 rgba(255,255,255,.12)}
+  }
+  .opt.running{ /* 小流星逃跑：金色发光 + 尾巴 */
+    background:rgba(232,200,122,.18);
+    box-shadow:0 8px 22px rgba(0,0,0,.3), 0 0 20px rgba(232,200,122,.45);
+    transform:rotate(6deg) scale(.95);
+  }
+  .opt.running::after{ /* 金色流星尾巴 */
+    content:'';position:absolute;top:50%;right:-38px;width:34px;height:2px;
+    background:linear-gradient(90deg,rgba(247,231,176,.9),transparent);
+    border-radius:2px;transform:translateY(-50%);
+    box-shadow:0 0 6px 1px rgba(232,200,122,.4);
+  }
+  .opt.tired{ /* 跑累了：坠落的小星星 */
+    opacity:.72;background:rgba(255,255,255,.04);border-color:rgba(154,146,130,.35);
+    color:rgba(250,245,236,.55);
+    animation:tiredWobble .5s ease-in-out infinite;
+    box-shadow:0 4px 12px rgba(0,0,0,.3);
+  }
+  .opt.tired .mark{color:rgba(154,146,130,.5)}
+  @keyframes tiredWobble{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(3deg)}}
+  .opt.correct{
+    background:linear-gradient(180deg,#FBF0D0 0%,var(--gold) 100%);
+    color:var(--night);border-color:var(--gold);
+    box-shadow:0 8px 22px rgba(0,0,0,.3), 0 0 24px rgba(232,200,122,.55);
+    animation:correctPulse .5s;
+  }
+  .opt.correct .mark{color:var(--gold-2)}
+  @keyframes correctPulse{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
+  .opt.wrong{
+    background:rgba(255,255,255,.03);border-color:rgba(154,146,130,.3);color:rgba(154,146,130,.6);
+    text-decoration:line-through;cursor:not-allowed;box-shadow:none;
+  }
+  .opt.disabled{pointer-events:none;opacity:.85}
+  .puff{position:absolute;pointer-events:none;font-size:16px;z-index:5;animation:puff .55s ease-out forwards}
+  @keyframes puff{from{opacity:1;transform:translateY(0) scale(.7)}to{opacity:0;transform:translateY(-18px) scale(1.35)}}
+
+  .float-plus{position:fixed;z-index:70;pointer-events:none;font-size:22px;color:var(--gold);animation:plusFly .9s ease-out forwards}
+  @keyframes plusFly{
+    0%{opacity:0;transform:translateY(0) scale(.5)}
+    20%{opacity:1;transform:translateY(-14px) scale(1.1)}
+    100%{opacity:0;transform:translateY(-70px) scale(.9)}
+  }
+  .cheer{margin-top:14px;text-align:center;font-size:13.5px;font-weight:800;color:var(--gold-soft);min-height:22px;letter-spacing:1px}
+
+  /* ============ 结局 ============ */
+  #result{justify-content:center;text-align:center}
+  .result-title{
+    font-size:clamp(32px,8vw,42px);letter-spacing:7px;font-weight:900;
+    background:linear-gradient(180deg,#FBF0D0 0%,var(--gold) 45%,var(--gold-2) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 16px rgba(232,200,122,.35));
+  }
+  .win-tag{
+    display:inline-block;margin-top:12px;font-size:12px;font-weight:700;letter-spacing:5px;color:var(--gold);
+    border:1px solid rgba(232,200,122,.45);border-radius:999px;
+    padding:5px 18px;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
+  }
+  .score-chips{display:flex;gap:12px;margin:20px 0 16px;flex-wrap:wrap;justify-content:center}
+  .chip{
+    color:var(--gold-soft);border:1px solid rgba(232,200,122,.4);border-radius:999px;
+    padding:8px 18px;font-size:13.5px;font-weight:800;
+    background:rgba(255,255,255,.06);backdrop-filter:blur(8px);
+    box-shadow:0 6px 16px rgba(0,0,0,.25);
+  }
+  .chip.mint{border-color:rgba(245,198,208,.5);color:var(--pink)}
+  .chip.pink{border-color:rgba(232,200,122,.6);color:var(--gold-soft)}
+  .verdict{
+    margin-bottom:22px;font-size:14px;font-weight:700;color:rgba(250,245,236,.85);line-height:1.8;
+    border:1px solid rgba(232,200,122,.35);border-radius:999px;
+    padding:9px 22px;display:inline-block;background:rgba(255,255,255,.05);backdrop-filter:blur(8px);
+  }
+
+  /* 金色信封 */
+  .letter-wrap{position:relative;width:100%;max-width:430px;margin:0 auto;min-width:0}
+  .letter{
+    width:100%;background-color:#FCF9F1;
+    background-image:linear-gradient(180deg,rgba(255,255,255,.4) 0%,rgba(0,0,0,0) 100%),
+                     linear-gradient(rgba(201,154,85,.16) 1px, transparent 1px);
+    background-size:100% 100%, 100% 38px;
+    border:1.5px solid var(--gold);border-radius:16px;
+    box-shadow:0 18px 46px rgba(0,0,0,.45), 0 0 0 5px rgba(232,200,122,.08), 0 0 34px rgba(232,200,122,.12);
+    padding:36px 26px 26px;text-align:left;min-height:280px;position:relative;
+    color:#6B5B4E;
+    user-select:text;-webkit-user-select:text;
+  }
+  .letter::before{ /* 顶部金色细线 */
+    content:'';position:absolute;top:0;left:8%;right:8%;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,transparent,rgba(232,200,122,.9),transparent);
+  }
+  .letter .seal{ /* 金蜡封印 */
+    position:absolute;top:-17px;right:18px;width:44px;height:44px;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,#F7E7B0 0%,var(--gold) 45%,var(--gold-2) 100%);
+    border:1.5px solid #C99A55;color:#7A5B2A;font-size:17px;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.6);
+    transform:rotate(8deg);
+  }
+  .letter h3{font-size:19px;font-weight:900;letter-spacing:2px;color:#7A5B2A;margin-bottom:14px}
+  .letter h3 em{font-style:normal;color:#C99A55}
+  .letter .lines{font-size:16px;line-height:2.1;letter-spacing:.5px;font-weight:600;color:#6B5B4E;white-space:pre-wrap;word-break:break-word}
+  .letter .caret{display:inline-block;width:8px;height:17px;background:var(--gold-2);vertical-align:-2px;animation:blink .8s step-end infinite;margin-left:2px}
+  @keyframes blink{50%{opacity:0}}
+  .letter .sig{
+    margin-top:20px;text-align:right;font-size:17px;font-weight:900;color:#7A5B2A;
+    letter-spacing:2px;
+  }
+  .letter .sig small{display:block;font-size:10px;font-weight:700;color:#B89E7A;margin-top:3px;letter-spacing:3px}
+
+  .replay-btn{
+    margin-top:26px;border:none;border-radius:999px;padding:13px 40px;
+    font-size:15px;font-family:inherit;font-weight:900;letter-spacing:4px;color:var(--night);cursor:pointer;
+    background:linear-gradient(180deg,#FBF0D0 0%,var(--gold) 55%,#D8AE63 100%);
+    box-shadow:0 10px 26px rgba(232,200,122,.26), inset 0 1px 0 rgba(255,255,255,.5);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .replay-btn:hover{transform:translateY(-2px)}
+  .replay-btn:active{transform:translateY(2px) scale(.98)}
+  .result-made{
+    margin-top:16px;font-size:11px;font-weight:600;letter-spacing:4px;
+    color:rgba(232,200,122,.7);border-top:1px solid rgba(232,200,122,.25);padding-top:10px;
+  }
+
+  .star-bit{ /* 金色星片粒子 */
+    position:fixed;top:-20px;z-index:80;pointer-events:none;
+    width:7px;height:7px;border-radius:1.5px;
+    background:linear-gradient(135deg,#FBF0D0,var(--gold));
+    box-shadow:0 0 8px 1px rgba(232,200,122,.5);
+    animation:fall linear forwards;
+  }
+  .petal{ /* 粉色爱心粒子 */
+    position:fixed;top:-30px;z-index:80;pointer-events:none;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{to{transform:translateY(114vh) rotate(400deg);opacity:.12}}
+</style>
+</head>
+<body>
+
+<!-- ============ SVG 素材（金色星星 / 向日葵 / 星星光环） ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="haloG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E8C87A" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#E8C87A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="duneG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8C87A"/>
+      <stop offset="100%" stop-color="#B98A45"/>
+    </linearGradient>
+    <linearGradient id="duneDarkG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A3460"/>
+      <stop offset="100%" stop-color="#1A2240"/>
+    </linearGradient>
+    <symbol id="star5" viewBox="0 0 24 24">
+      <path d="M12 1.8 L14.8 8.4 L21.8 8.6 L16.3 13 L18.2 19.8 L12 16 L5.8 19.8 L7.7 13 L2.2 8.6 L9.2 8.4 Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="sunflower" viewBox="0 0 60 60">
+      <g fill="#E8C87A" stroke="#C99A55" stroke-width="1">
+        <ellipse cx="30" cy="14" rx="5" ry="10"/>
+        <ellipse cx="30" cy="14" rx="5" ry="10" transform="rotate(60 30 30)"/>
+        <ellipse cx="30" cy="14" rx="5" ry="10" transform="rotate(120 30 30)"/>
+        <ellipse cx="30" cy="14" rx="5" ry="10" transform="rotate(180 30 30)"/>
+        <ellipse cx="30" cy="14" rx="5" ry="10" transform="rotate(240 30 30)"/>
+        <ellipse cx="30" cy="14" rx="5" ry="10" transform="rotate(300 30 30)"/>
+      </g>
+      <circle cx="30" cy="30" r="8" fill="#C99A55" stroke="#8A6A34" stroke-width="1.2"/>
+      <circle cx="30" cy="30" r="3.4" fill="#E8C87A"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ 固定背景 ============ -->
+<div class="bg" id="sky">
+  <!-- 星星由 JS 生成 -->
+  <!-- 金色沙丘 -->
+  <div class="dune dune-far">
+    <svg viewBox="0 0 600 130" preserveAspectRatio="none">
+      <path d="M0 130 L0 96 Q90 52 200 86 Q320 122 430 74 Q520 40 600 78 L600 130 Z" fill="url(#duneDarkG)"/>
+      <use href="#sunflower" x="70" y="92" width="16" height="16" opacity=".8"/>
+      <use href="#sunflower" x="520" y="88" width="13" height="13" opacity=".7"/>
+    </svg>
+  </div>
+  <div class="dune dune-near">
+    <svg viewBox="0 0 600 130" preserveAspectRatio="none">
+      <path d="M0 130 L0 104 Q100 70 210 98 Q330 126 450 84 Q540 52 600 92 L600 130 Z" fill="url(#duneG)" opacity=".85"/>
+      <path d="M0 130 L0 120 Q100 96 210 114 Q330 130 450 106 Q540 84 600 110 L600 130 Z" fill="#C99A55" opacity=".5"/>
+      <use href="#sunflower" x="150" y="104" width="20" height="20" opacity=".9"/>
+      <use href="#sunflower" x="430" y="96" width="17" height="17" opacity=".85"/>
+    </svg>
+  </div>
+</div>
+
+<button id="soundBtn" title="声音开关">🔊</button>
+
+<!-- ============ 开场 ============ -->
+<section id="intro" class="screen active">
+  <span class="kicker">你我皆星辰 · QIXI 2026</span>
+  <h1>恋爱答题闯关</h1>
+  <p class="sub"><b>大笨蛋</b> 给 <b class="he">小可爱</b> 的 · 星辰港湾限定</p>
+  <p class="tip">共 8 题 · 真正的答案才点得到哦</p>
+  <button class="enter-btn" id="startBtn">开始答题 ✦</button>
+
+  <!-- 天使托举小猫（点击光环有涟漪） -->
+  <div class="scene" id="haloScene">
+    <svg viewBox="0 0 260 240">
+      <!-- 身后柔光 -->
+      <ellipse cx="130" cy="120" rx="98" ry="92" fill="url(#haloG)"/>
+      <!-- 天使剪影 -->
+      <g fill="#2A3460">
+        <!-- 裙摆 -->
+        <path d="M130 196 q-34 -6 -40 -46 q-6 -44 40 -54 q46 10 40 54 q-6 40 -40 46 z"/>
+        <!-- 头 -->
+        <circle cx="130" cy="86" r="19"/>
+        <!-- 左翅 -->
+        <path d="M100 108 q-34 -6 -42 -44 q16 -4 28 4 q-2 -18 6 -32 q14 10 18 28 z"/>
+        <!-- 右翅 -->
+        <path d="M160 108 q34 -6 42 -44 q-16 -4 -28 4 q2 -18 -6 -32 q-14 10 -18 28 z"/>
+        <!-- 左臂（托举） -->
+        <path d="M116 112 q-10 -20 -4 -42 q10 -12 26 -8" fill="none" stroke="#2A3460" stroke-width="9" stroke-linecap="round"/>
+        <!-- 右臂（托举） -->
+        <path d="M144 112 q10 -20 4 -42 q-10 -12 -26 -8" fill="none" stroke="#2A3460" stroke-width="9" stroke-linecap="round"/>
+        <!-- 双手（小猫脚下的托举点） -->
+        <circle cx="113" cy="64" r="5.5" fill="#2A3460"/>
+        <circle cx="147" cy="64" r="5.5" fill="#2A3460"/>
+      </g>
+      <!-- 天使头后光环（金色） -->
+      <ellipse cx="130" cy="93" rx="36" ry="13" fill="none" stroke="#E8C87A" stroke-width="3" opacity=".85" transform="rotate(-6 130 93)"/>
+      <!-- 小猫 -->
+      <g>
+        <!-- 尾巴 -->
+        <path d="M153 62 q18 -2 20 -16 q2 -14 -12 -13" fill="none" stroke="#FAF5EC" stroke-width="5.5" stroke-linecap="round"/>
+        <!-- 身体 -->
+        <ellipse cx="130" cy="54" rx="23" ry="18" fill="#FAF5EC"/>
+        <!-- 胸前小爱心 -->
+        <path d="M130 50 q-4 -4 -8 -1 q-4 3 0 7 q4 -4 8 -6 z" fill="#F5C6D0"/>
+        <!-- 头 -->
+        <circle cx="130" cy="26" r="15" fill="#FAF5EC"/>
+        <!-- 耳朵 -->
+        <path d="M118.5 15 l-3.5 -11 l10 6.5 z" fill="#FAF5EC" stroke="#E8C87A" stroke-width="1.4"/>
+        <path d="M141.5 15 l3.5 -11 l-10 6.5 z" fill="#FAF5EC" stroke="#E8C87A" stroke-width="1.4"/>
+        <!-- 眼睛 -->
+        <circle cx="124.5" cy="26" r="1.9" fill="#3A4A7C"/>
+        <circle cx="135.5" cy="26" r="1.9" fill="#3A4A7C"/>
+        <!-- 星星光环（呼吸发光） -->
+        <g class="halo">
+          <circle cx="130" cy="2" r="15" fill="none" stroke="#F7E7B0" stroke-width="1.6" opacity=".55"/>
+          <g class="halo-star">
+            <use href="#star5" x="125" y="-6" width="10" height="10" color="#F7E7B0"/>
+          </g>
+        </g>
+      </g>
+      <!-- 环绕小金星 -->
+      <use href="#star5" x="78" y="52" width="7" height="7" color="#E8C87A" opacity=".7" class="halo"/>
+      <use href="#star5" x="172" y="38" width="5" height="5" color="#F7E7B0" opacity=".6" class="halo" style="animation-delay:-1.4s"/>
+      <use href="#star5" x="196" y="96" width="6" height="6" color="#E8C87A" opacity=".5" class="halo" style="animation-delay:-2.2s"/>
+      <use href="#star5" x="52" y="130" width="5" height="5" color="#F5C6D0" opacity=".5" class="halo" style="animation-delay:-.8s"/>
+    </svg>
+  </div>
+
+  <p class="made-by">❤ 大笨蛋 出品 · 2026 七夕限定</p>
+</section>
+
+<!-- ============ 答题 ============ -->
+<section id="quiz" class="screen hidden">
+  <div class="quiz-head">
+    <div class="progress" id="progress"></div>
+    <div class="q-count" id="qCount">第 1 / 8 题</div>
+  </div>
+  <div class="card" id="card">
+    <span class="q-badge" id="qBadge">LEVEL 1</span>
+    <p class="q-text" id="qText"></p>
+    <div class="options" id="options"></div>
+    <div class="cheer" id="cheer"></div>
+  </div>
+</section>
+
+<!-- ============ 结局 ============ -->
+<section id="result" class="screen hidden">
+  <div class="result-title">恭喜通关</div>
+  <p class="win-tag">✦ YOU WIN ✦</p>
+  <div class="score-chips">
+    <div class="chip mint" id="chipRight"></div>
+    <div class="chip pink" id="chipMiss"></div>
+  </div>
+  <p class="verdict" id="verdict"></p>
+  <div class="letter-wrap">
+    <div class="letter">
+      <span class="seal">✦</span>
+      <h3>💌 TO <em>小可爱</em></h3>
+      <div class="lines" id="letterLines"></div>
+      <div class="sig hidden" id="sig">—— 爱你的 大笨蛋<small>QIXI · 星辰港湾 · 2026</small></div>
+    </div>
+  </div>
+  <button class="replay-btn hidden" id="replayBtn">再玩一次 ✦</button>
+  <p class="result-made hidden" id="resultMade">❤ 大笨蛋 出品</p>
+</section>
+
+<script>
+/* ============================================================
+ *  恋爱答题闯关 · 天使星「星辰港湾」（玻璃拟态 · 躲猫猫选项）
+ *  定制：改 QUESTIONS 题库、LETTER 情书，YOU/HER 两个昵称变量
+ * ============================================================ */
+
+const YOU = '大笨蛋';   // ← 你的昵称
+const HER = '小可爱';   // ← 她的昵称
+
+const QUESTIONS = [
+  { q: '小猫是天使，那' + HER + '是什么？', opts: ['我的全世界 ❤', '一只小麻烦', '暂时没想好'], a: 0 },
+  { q: '天使星愿意做小猫的港湾，' + YOU + '愿意做' + HER + '的什么？', opts: ['专属跑腿员', '永远的依靠', '兼职饲养员'], a: 1 },
+  { q: '天使星的光环上有几颗星？', opts: ['三颗', '比我爱' + HER + '的心少一颗', '八颗'], a: 1 },
+  { q: HER + '生气的时候，' + YOU + '的正确做法是？', opts: ['讲道理讲到她服', '先道歉，再抱抱', '假装没看见'], a: 1 },
+  { q: YOU + '每天早上醒来，第一件事是？', opts: ['看手机', '想' + HER, '赖床'], a: 1 },
+  { q: '下面哪句话是' + YOU + '的心声？', opts: ['我超爱' + HER, HER + '真烦人', '还是游戏香'], a: 0 },
+  { q: '七夕当晚，' + YOU + '最想带' + HER + '去？', opts: ['看星星，说悄悄话', '网吧开黑', '公司加班'], a: 0 },
+  { q: '最后一题：我们俩，谁会先说「我爱你」？', opts: [YOU + '先说', '每天都互相说 ❤', HER + '先说'], a: 1 }
+];
+
+const LETTER = [
+  '致 ' + HER + '：', '',
+  '有人说，小猫是天使，', '而我只想成为你的港湾。', '',
+  '星光再远也会眨眼，', '就像我望向你的目光，', '从来不会迷路。', '',
+  '你像向日葵一样明亮，', '我愿做永远向着你的光。', '',
+  '七夕快乐，' + HER + '，', '银河很长，余生也很长，', '我们慢慢走。'
+];
+
+/* ================= 背景星空 ================= */
+(function makeSky(){
+  const sky = document.getElementById('sky');
+  for (let i = 0; i < 42; i++){
+    const s = document.createElement('span');
+    s.className = 'star';
+    const r = Math.random();
+    if (r > .82) s.classList.add('big');
+    else if (r > .62) s.classList.add('gold');
+    s.style.left = (Math.random()*100) + '%';
+    s.style.top  = (Math.random()*88) + '%';
+    const size = s.classList.contains('big') ? 2.6 : (1 + Math.random()*1.5);
+    s.style.width = size + 'px'; s.style.height = size + 'px';
+    s.style.setProperty('--d', (2.6 + Math.random()*3.4) + 's');
+    s.style.setProperty('--dl', (-Math.random()*5) + 's');
+    sky.appendChild(s);
+  }
+  for (let i = 0; i < 3; i++){
+    const m = document.createElement('span');
+    m.className = 'shooting';
+    m.style.top = (8 + Math.random()*30) + '%';
+    m.style.setProperty('--sd', (7 + Math.random()*5) + 's');
+    m.style.setProperty('--sdl', (Math.random()*8) + 's');
+    sky.appendChild(m);
+  }
+})();
+
+/* ================= 音效 ================= */
+let actx = null, soundOn = true;
+function beep(freq, dur, type, when, gain) {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime + (when || 0);
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type || 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(gain || 0.13, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t + dur + 0.05);
+  } catch (e) {}
+}
+const playCorrect = () => { beep(523.25,.12,'sine',0); beep(659.25,.12,'sine',.12); beep(783.99,.22,'sine',.24); };
+const playWrong   = () => { beep(180,.22,'square',0,.07); };
+const playDodge   = () => { beep(440,.07,'square',0,.05); beep(660,.07,'square',.07,.05); beep(880,.1,'square',.14,.05); };
+const playWin     = () => { [523.25,659.25,783.99,1046.5].forEach((f,i)=>beep(f,.2,'sine',i*.13,.13)); };
+
+document.getElementById('soundBtn').addEventListener('click', function(){
+  soundOn = !soundOn;
+  this.textContent = soundOn ? '🔊' : '🔇';
+  if (soundOn) beep(660,.15,'sine',0,.1);
+});
+
+/* ================= 答题引擎 ================= */
+let index = 0, misses = 0, answered = false;
+const $ = id => document.getElementById(id);
+const progressEl = $('progress'), qCountEl = $('qCount'), cardEl = $('card'),
+      qBadgeEl = $('qBadge'), qTextEl = $('qText'), optionsEl = $('options'), cheerEl = $('cheer');
+
+const TAUNTS = [
+  '诶？差一点点～',
+  '抓不到抓不到 😝',
+  '嘻嘻，流星跑掉啦～',
+  '再来！就要点到了！',
+  '它说：抓我呀抓我呀～',
+  '哎呀，再快一点点嘛～',
+  HER + ' 加油，快抓住它！'
+];
+
+function puff(btn){
+  const s = document.createElement('span');
+  s.className = 'puff'; s.textContent = '✦';
+  s.style.left = (btn.offsetLeft + btn.offsetWidth/2 - 12) + 'px';
+  s.style.top  = (btn.offsetTop  + btn.offsetHeight/2 - 10) + 'px';
+  optionsEl.appendChild(s);
+  setTimeout(() => s.remove(), 580);
+}
+
+function initDodge(btns, correctIdx){
+  btns.forEach((btn, i) => {
+    if (i === correctIdx) { btn.classList.add('ok'); return; }  // 正确答案不跑
+    let dodges = 0, canRun = true, lastDodge = 0;
+    const tryDodge = (px, py) => {
+      if (!canRun || answered) return;
+      const now = Date.now();
+      if (now - lastDodge < 280) return;            // 冷却，防止原地抽搐
+      lastDodge = now;
+      const ar = optionsEl.getBoundingClientRect();
+      const bw = btn.offsetWidth, bh = btn.offsetHeight;
+      const minX = 4, maxX = ar.width - bw - 4, minY = 4, maxY = ar.height - bh - 4;
+      if (maxX <= minX || maxY <= minY){            // 被逼到角落：放弃挣扎，可以被抓住
+        canRun = false; btn.classList.add('tired');
+        cheerEl.textContent = '😮‍💨 跑累了，变成坠落的小星星……';
+        btn.addEventListener('click', () => pick(i, btn), {once:true});
+        return;
+      }
+      let nx, ny;
+      for (let t = 0; t < 10; t++){                 // 别跑到手指/光标底下
+        nx = minX + Math.random() * (maxX - minX);
+        ny = minY + Math.random() * (maxY - minY);
+        const dx = px - (ar.left + nx + bw/2), dy = py - (ar.top + ny + bh/2);
+        if (Math.hypot(dx, dy) > 140) break;
+      }
+      puff(btn);
+      btn.style.left = nx + 'px';
+      btn.style.top  = ny + 'px';
+      btn.classList.add('running');
+      playDodge();
+      dodges++;
+      cheerEl.textContent = TAUNTS[Math.min(dodges - 1, TAUNTS.length - 1)];
+      if (dodges >= 7){                             // 跑累了，可以被抓住
+        canRun = false; btn.classList.add('tired');
+        cheerEl.textContent = '😮‍💨 跑累了……被你抓住了';
+        btn.addEventListener('click', () => pick(i, btn), {once:true});
+      }
+    };
+    btn.addEventListener('pointerenter', e => tryDodge(e.clientX, e.clientY));
+    btn.addEventListener('mousedown', e => {
+      if (canRun && !answered){ e.preventDefault(); tryDodge(e.clientX, e.clientY); }
+    });
+    btn.addEventListener('touchstart', e => {
+      if (canRun && !answered){
+        e.preventDefault();
+        const t = e.changedTouches[0];
+        tryDodge(t.clientX, t.clientY);
+      }
+    }, {passive:false});
+  });
+}
+
+function renderProgress(){
+  progressEl.innerHTML = '';
+  for (let i = 0; i < QUESTIONS.length; i++){
+    const h = document.createElement('i');
+    h.textContent = '★';
+    if (i < index) h.classList.add('on');
+    progressEl.appendChild(h);
+  }
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[index];
+  answered = false;
+  cardEl.classList.remove('shake'); cardEl.classList.remove('pop');
+  void cardEl.offsetWidth;
+  cardEl.classList.add('pop');
+  qBadgeEl.textContent = 'LEVEL ' + (index + 1);
+  qCountEl.textContent = '第 ' + (index + 1) + ' / ' + QUESTIONS.length + ' 题';
+  cheerEl.textContent = '';
+  qTextEl.innerHTML = q.q
+    .replace(new RegExp(YOU,'g'), '<span class="you">' + YOU + '</span>')
+    .replace(new RegExp(HER,'g'), '<span class="her">' + HER + '</span>');
+  optionsEl.innerHTML = '';
+  const btns = [];
+  q.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = '<span class="mark">' + '①②③④'[i] + '</span>' + opt;
+    b.addEventListener('click', () => pick(i, b));
+    optionsEl.appendChild(b);
+    btns.push(b);
+  });
+  const arH = optionsEl.clientHeight, arW = optionsEl.clientWidth;
+  btns.forEach((b, i) => {                          // 初始三个槽位
+    b.style.top  = Math.round(8 + i * ((arH - b.offsetHeight - 16) / 2)) + 'px';
+    b.style.left = Math.round((arW - b.offsetWidth) / 2) + 'px';
+  });
+  initDodge(btns, q.a);
+  renderProgress();
+}
+
+function pick(i, btn){
+  if (answered) return;
+  const q = QUESTIONS[index];
+  const btns = [...optionsEl.children];
+  if (i === q.a){
+    answered = true;
+    btn.classList.add('correct');
+    btns.forEach(b => b.classList.add('disabled'));
+    playCorrect();
+    cheerEl.textContent = '答对啦！' + HER + ' 真聪明 ❤';
+    spawnPlus(btn);
+    setTimeout(next, 950);
+  } else {
+    misses++;
+    btn.classList.add('wrong');
+    cardEl.classList.remove('shake'); void cardEl.offsetWidth; cardEl.classList.add('shake');
+    playWrong();
+    cheerEl.textContent = '再想想嘛～';
+  }
+}
+
+function spawnPlus(btn){
+  const r = btn.getBoundingClientRect();
+  const s = document.createElement('div');
+  s.className = 'float-plus';
+  s.textContent = '+1 ★';
+  s.style.left = (r.left + r.width/2 - 16) + 'px';
+  s.style.top  = (r.top - 8) + 'px';
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 950);
+}
+
+function next(){
+  index++;
+  if (index < QUESTIONS.length) { renderQuestion(); return; }
+  showResult();
+}
+
+/* ================= 结局 ================= */
+function showResult(){
+  playWin();
+  $('intro').classList.add('hidden');
+  $('quiz').classList.add('hidden');
+  const res = $('result');
+  res.classList.remove('hidden');
+  res.classList.add('active','anim');
+  const total = QUESTIONS.length;
+  $('chipRight').textContent = '点亮 ' + total + ' 颗星 ✦';
+  $('chipMiss').textContent = misses === 0 ? '一次都没错！' : '错了 ' + misses + ' 次';
+  $('verdict').textContent = misses === 0 ? '一次都没错，' + YOU + ' 感动到哭！'
+    : misses <= 2 ? '只错了一点点，' + YOU + ' 假装没看见～'
+    : '错了好几次……没关系，' + YOU + ' 全都原谅你 ❤';
+  starRain();
+  typeLetter();
+}
+
+function typeLetter(){
+  const linesEl = $('letterLines');
+  linesEl.textContent = '';
+  const all = LETTER.join('\n');
+  let i = 0;
+  const caret = document.createElement('span');
+  caret.className = 'caret';
+  linesEl.appendChild(caret);
+  const timer = setInterval(() => {
+    if (i <= all.length){
+      caret.remove();
+      linesEl.textContent = all.slice(0, i);
+      linesEl.appendChild(caret);
+      i++;
+    } else {
+      clearInterval(timer);
+      caret.remove();
+      linesEl.appendChild(caret);
+      setTimeout(() => {
+        caret.remove();
+        $('sig').classList.remove('hidden');
+        $('replayBtn').classList.remove('hidden');
+        $('resultMade').classList.remove('hidden');
+        starRain();
+      }, 400);
+    }
+  }, 55);
+}
+
+function starRain(){
+  for (let i = 0; i < 22; i++){
+    const s = document.createElement('div');
+    s.className = 'star-bit';
+    s.style.left = (Math.random()*100) + 'vw';
+    s.style.width = s.style.height = (5 + Math.random()*6) + 'px';
+    s.style.animationDuration = (2.6 + Math.random()*2.4) + 's';
+    s.style.animationDelay = (Math.random()*0.9) + 's';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 6500);
+  }
+  for (let i = 0; i < 10; i++){
+    const s = document.createElement('div');
+    s.className = 'petal';
+    s.textContent = Math.random() > .5 ? '💗' : '🩷';
+    s.style.left = (Math.random()*100) + 'vw';
+    s.style.fontSize = (12 + Math.random()*14) + 'px';
+    s.style.animationDuration = (3 + Math.random()*2.4) + 's';
+    s.style.animationDelay = (Math.random()*0.8) + 's';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 6800);
+  }
+}
+
+/* ================= 事件 ================= */
+$('startBtn').addEventListener('click', () => {
+  $('intro').classList.add('hidden');
+  const qz = $('quiz');
+  qz.classList.remove('hidden');
+  qz.classList.add('active','anim');
+  renderQuestion();
+});
+$('replayBtn').addEventListener('click', () => {
+  index = 0; misses = 0;
+  $('sig').classList.add('hidden');
+  $('replayBtn').classList.add('hidden');
+  $('resultMade').classList.add('hidden');
+  $('result').classList.add('hidden');
+  const qz = $('quiz');
+  qz.classList.remove('hidden');
+  qz.classList.add('active','anim');
+  renderQuestion();
+});
+/* 点击天使插画：金色涟漪扩散 */
+$('haloScene').addEventListener('click', function(e){
+  const r = this.getBoundingClientRect();
+  const ring = document.createElement('span');
+  ring.className = 'ripple';
+  ring.style.left = (e.clientX - r.left) + 'px';
+  ring.style.top  = (e.clientY - r.top) + 'px';
+  this.appendChild(ring);
+  setTimeout(() => ring.remove(), 900);
+  beep(880,.12,'sine',0,.08);
+});
+</script>
+</body>
+</html>
